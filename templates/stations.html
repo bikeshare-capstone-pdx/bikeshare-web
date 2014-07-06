@@ -1,7 +1,67 @@
 {%extends "base.html" %}
 
-{% block title %}BikeSharePDX{% endblock %}
+{% block title %}All Stations{% endblock %}
 
 {% block page_content %}
-Stations page.
+<div class="widget">
+    <div class="widget-header">
+        <div class="row">
+            <div class="col-sm-10">
+                All Stations
+            </div>
+            <div class="col-sm-2">
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <select class="form-control input-sm">
+                        <option value="">
+                            Station ID
+                        </option>
+                        <option value="">
+                            Address 
+                        </option>
+                        <option value="">
+                            Total Docks (Increasing)
+                        </option>
+                        <option value="">
+                            Total Docks (Decreasing)
+                        </option>
+                        <option value="">
+                            Available Bikes (Increasing)
+                        </option>
+                        <option value="">
+                            Available Bikes (Decreasing)
+                        </option>
+                    </select>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <div class="widget-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>Station ID</td>
+                    <td>Address</td>
+                    <td>Total docks</td>
+                    <td>Available bikes</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td></td>
+                    <td>10</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td></td>
+                    <td>10</td>
+                    <td>2</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

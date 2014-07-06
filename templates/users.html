@@ -1,7 +1,64 @@
 {%extends "base.html" %}
 
-{% block title %}BikeSharePDX{% endblock %}
+{% block title %}All Users{% endblock %}
 
 {% block page_content %}
-Users page.
+<div class="widget">
+    <div class="widget-header">
+        <div class="row">
+            <div class="col-sm-10">
+                All Users
+            </div>
+            <div class="col-sm-2">
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <select class="form-control input-sm">
+                        <option value="">
+                            User ID
+                        </option>
+                        <option value="">
+                            Address 
+                        </option>
+                        <option value="">
+                            Total Docks (Increasing)
+                        </option>
+                        <option value="">
+                            Total Docks (Decreasing)
+                        </option>
+                        <option value="">
+                            Available Bikes (Increasing)
+                        </option>
+                        <option value="">
+                            Available Bikes (Decreasing)
+                        </option>
+                    </select>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <div class="widget-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>User ID</td>
+                    <td>Username</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Thor</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Bobby</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

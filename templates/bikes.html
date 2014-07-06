@@ -1,13 +1,55 @@
 {%extends "base.html" %}
 
-{% block title %}BikeSharePDX{% endblock %}
+{% block title %}All Bikes{% endblock %}
 
 {% block page_content %}
-Bikes page.
-{% if bike_id: %}
-    bike_id: {{ bike_id }}
-{% else %}
-    No bike_id.
-
-{% endif %} 
+<div class="widget">
+    <div class="widget-header">
+        <div class="row">
+            <div class="col-sm-10">
+                All Bikes
+            </div>
+            <div class="col-sm-2">
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <select class="form-control input-sm">
+                        <option value="">
+                            Bike ID
+                        </option>
+                        <option value="">
+                            Address 
+                        </option>
+                        <option value="">
+                            Available Bikes (Decreasing)
+                        </option>
+                    </select>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <div class="widget-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>Bike ID</td>
+                    <td>Address</td>
+                    <td>Available?</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td></td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td></td>
+                    <td>No</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
