@@ -1,4 +1,4 @@
-{%extends "base.html" %}
+{% extends "base.html" %}
 
 {% block title %}All Users{% endblock %}
 
@@ -6,10 +6,10 @@
 <div class="widget">
     <div class="widget-header">
         <div class="row">
-            <div class="col-sm-10">
-                All Users
+            <div class="col-sm-9">
+                <strong>All Users</strong>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-3">
             <form class="form-inline" role="form">
                 <div class="form-group">
                     <select class="form-control input-sm">
@@ -17,19 +17,19 @@
                             User ID
                         </option>
                         <option value="">
-                            Address 
+                            Username 
                         </option>
                         <option value="">
-                            Total Docks (Increasing)
+                            Credit Card
                         </option>
                         <option value="">
-                            Total Docks (Decreasing)
+                            Membership Status
                         </option>
                         <option value="">
-                            Available Bikes (Increasing)
+                            Membership Expires (Increasing)
                         </option>
                         <option value="">
-                            Available Bikes (Decreasing)
+                            Membership Expires (Decreasing)
                         </option>
                     </select>
                 </div>
@@ -43,7 +43,8 @@
                 <tr>
                     <td>User ID</td>
                     <td>Username</td>
-                    <td></td>
+                    <td>Membership Status</td>
+                    <td>Membership Expires</td>
                 </tr>
             </thead>
             <tbody>
@@ -51,10 +52,12 @@
                     <td>1</td>
                     <td>Thor</td>
                     <td></td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>2</td>
                     <td>Bobby</td>
+                    <td></td>
                     <td></td>
                 </tr>
             </tbody>
