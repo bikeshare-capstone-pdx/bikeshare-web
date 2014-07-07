@@ -1,0 +1,59 @@
+{%extends "base.html" %}
+
+{% block title %}Station Details{% endblock %}
+
+{% block page_content %}
+<h2><p class="text-center">Station ID: {{ station_id }}</p></h2>
+<p class="text-center">Address:</p>
+<div class="row">
+    <div class="col-sm-9">
+        <div class="widget">
+            <div class="widget-header">
+                <strong>History</strong>
+            </div>
+            <div class="widget-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <td>Date</td>
+                            <td>Time</td>
+                            <td>Number of Bikes</td>
+                            <td>Action</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>7/1/14</td>
+                            <td>12:30pm</td>
+                            <td>1</td>
+                            <td>Checked out</td>
+                        </tr>
+                        <tr>
+                            <td>7/1/14</td>
+                            <td>9:00am</td>
+                            <td>1</td>
+                            <td>Checked in</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="widget">
+            <div class="widget-header">
+                <strong>Current Status</strong>
+            </div>
+            <div class="widget-body">
+                <table class="table">
+                    <tr><td>Station Id:</td><td></td></tr>
+                    <tr><td># Bikes Available</td><td></td></tr>
+                    <tr><td># Docks Available:</td><td></td></tr>
+                    <tr><td>Current Bike Discount:</td><td></td></tr>
+                    <tr><td>Current Dock Discount:</td><td></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
