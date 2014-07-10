@@ -9,7 +9,7 @@ from flask import make_response, request, current_app
 from functools import update_wrapper
 
 app = Flask(__name__)
-
+app.config.setdefault('BOOTSTRAP_SERVE_LOCAL',True)
 bootstrap = Bootstrap(app)
 
 # Set debug mode.
@@ -252,7 +252,7 @@ def internal_server_error(e):
 
 if __name__ == '__main__':
     if debug:
-        app.run(host='127.0.0.1', port=8081, debug=True)
+        app.run(host='127.0.0.1', port=8089, debug=True)
     else:
-        app.run(host='0.0.0.0', port=8081, debug=True)
+        app.run(host='0.0.0.0', port=8089, debug=False)
 
