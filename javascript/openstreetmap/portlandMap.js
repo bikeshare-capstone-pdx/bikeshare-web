@@ -1,13 +1,13 @@
 var pointFeature;
 var map;
 var stationLayer;
+var bikeLayer;
 var featuresToStationIds = []
 var features = []
-//this is entirely temporary and will be obtained by ajax later
 var routePoint = 0;
 var bikeFeature;
 var riderFeatures = {};
-
+var stationFeatures = {};
 function init() {
     map = new OpenLayers.Map("mapdiv");
     //switch between local and remote tiles
@@ -20,7 +20,7 @@ function init() {
     var layer_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
     layer_style.fillOpacity = 0.2;
     layer_style.graphicOpacity = 1;
-    var lonlat = new OpenLayers.LonLat(-122.680591,45.510016).transform(
+    var lonlat = new OpenLayers.LonLat(-122.653534,45.522912).transform(
         new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
         new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
       );
@@ -48,7 +48,7 @@ function init() {
         stationLayer.redraw();
     });
     map.addLayer(stationLayer);
-    var zoom = 14;
+    var zoom = 13;
       map.setCenter(lonlat, zoom); 
       bikeLayer = new OpenLayers.Layer.Vector("bikeLayer", {
           style : {
@@ -70,7 +70,6 @@ function init() {
     highlightCtrl.activate();
     map.setCenter(lonlat, zoom);
     createBikeshareStationFeatures();
-    //createBikeFeatures();
     createRiderFeatures();
 }
 
@@ -96,7 +95,6 @@ function createRiderFeatures() {
 
 function createRiderPoints(rider_locations) {
     for (var i = 0; i < rider_locations.length; i ++ ) {
-        console.log(rider_locations[i]);
         var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['location'][0],rider_locations[i]['location'][1]);
         bikePoint.transform(
             new OpenLayers.Projection("EPSG:4326"),
@@ -149,7 +147,6 @@ function updateRiderPoints(rider_locations) {
         bikeLayer.removeFeatures([feature]);
     }
     for (var i = 0; i < rider_locations.length; i ++ ) {
-        console.log(rider_locations[i]);
         var bikePoint = new OpenLayers.Geometry.Point(rider_locations[i]['location'][0],rider_locations[i]['location'][1]);
         bikePoint.transform(
             new OpenLayers.Projection("EPSG:4326"),
@@ -226,9 +223,9 @@ function createStationFeature(lon,lat,stationId,bikes,docks,index) {
         null,
         false
    );
-   stationLayer.addFeatures([pointFeature]);
+   stationFeatures[stationId] = pointFeature;
+   stationLayer.addFeatures(stationFeatures[stationId]);
    map.addPopup(pointFeature.attributes.popup);
-   //map.popups[index] = pointFeature.attributes.popup;
    for (var j = 0; j < map.popups.length; j ++) {
         map.popups[j].hide();
    }
@@ -238,50 +235,50 @@ function updateBikestationData() {
     for (var i = 0; i < map.popups.length; i ++) {
         map.popups[i].destroy();
     }
-    for (var i = 0; i < stationLayer.features.length; i ++) {
-        $.ajax({url : "http://bikeshare.cs.pdx.edu/bikeshare_dramage/REST/1.0/stations/info/" + stationLayer.features[i].attributes.stationId,
-             success: function(result) {
-                    stationData = JSON.parse(result);
-                    updateStationFeature(this.lon,this.lat,this.stationId,stationData.num_bikes,stationData.num_docks,this.stationId,this.index);
-              },
-              index : stationLayer.features[i].attributes.index,
-              stationId : stationLayer.features[i].attributes.stationId,
-              lat : stationLayer.features[i].attributes.lat,
-              lon : stationLayer.features[i].attributes.lon,
-              stationId : stationLayer.features[i].attributes.stationId
-       });
+    for (var featureId in stationFeatures) {
+        $.ajax({url : "http://bikeshare.cs.pdx.edu/bikeshare_dramage/REST/1.0/stations/info/" + featureId,
+            success : function(results) {
+                 stationData = JSON.parse(results);
+                 updateStationFeature(this.featureId,stationData);
+                },
+                featureId : featureId
+            });
     }
+    stationLayer.redraw();
 }
 
-function updateStationFeature(lon,lat,stationId,bikes,docks,stationId,index) {
-    var bikePercent = (bikes/docks) * 100;
+function updateStationFeature(stationId,stationData) {
+    var bikePercent = (stationData.num_bikes/stationData.num_docks) * 100;
     var pointColor;
     if (bikePercent > 70) {
-         pointColor = 'blue';
-    } else if (70 > bikePercent >= 40) {
-         pointColor = 'yellow';
+        pointColor = 'blue';
+    } else if ( 70 > bikePercent >= 40) {
+        pointColor = 'yellow';
     } else {
-         pointColor = 'red';
+        pointColor = 'red';
     }
-    stationLayer.features[index].attributes.pointColor = pointColor;
-    stationLayer.redraw();
-   var stationPoint = new OpenLayers.Geometry.Point(lon,lat);
-   stationPoint.transform(
-        new OpenLayers.Projection("EPSG:4326"),
-        new OpenLayers.Projection("EPSG:900913")
-   );
-
-   stationLayer.features[index].attributes.popup = new OpenLayers.Popup.FramedCloud("Popup" + stationId,
-        stationPoint.getBounds().getCenterLonLat(), null,
-        'Station ' + stationId + '</br>Bikes ' + bikes + '</br>Docks ' + docks,
-        null,
-        false
-   );
-   map.addPopup(stationLayer.features[index].attributes.popup);
-   for (var i = 0; i < map.popups.length; i ++) {
-       map.popups[i].hide();
-   }
+    stationFeatures[stationId].attributes.pointColor = pointColor;
+    var stationPoint = new OpenLayers.Geometry.Point(stationFeatures[stationId].attributes.lon,stationFeatures[stationId].attributes.lat);
+    stationPoint.transform(
+         new OpenLayers.Projection("EPSG:4326"),
+         new OpenLayers.Projection("EPSG:900913")
+    );  
+    console.log(stationFeatures[stationId].attributes.lon);
+    console.log(stationFeatures[stationId].attributes.lat); 
+    stationFeatures[stationId].attributes.popup = new OpenLayers.Popup.FramedCloud("Popup" + stationId,
+         stationPoint.getBounds().getCenterLonLat(), null,
+         'Station ' + stationId + '</br>Bikes ' + stationData['num_bikes'] + '</br>Docks ' + stationData['num_docks'],
+         null,
+         false
+    );  
+    map.addPopup(stationFeatures[stationId].attributes.popup);
+    for (var i = 0; i < map.popups.length; i ++) {
+        map.popups[i].hide();
+    }
+    stationLayer.removeFeatures([stationFeatures[stationId]]);
+    stationLayer.addFeatures([stationFeatures[stationId]]);
 }
+
 
 function getPopupIndex(popup) {
     popupIdx = -1;
@@ -293,5 +290,4 @@ function getPopupIndex(popup) {
     return popupIdx;
 }
 setInterval(function(){updateBikestationData()},15000);
-//setInterval(function(){moveBike()},1000);
 setInterval(function(){getRiderData()},1000);
