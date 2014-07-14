@@ -7,6 +7,7 @@ import re
 from datetime import timedelta
 from flask import make_response, request, current_app
 from functools import update_wrapper
+import sstoreclient
 
 app = Flask(__name__)
 
@@ -14,6 +15,9 @@ bootstrap = Bootstrap(app)
 
 # Set debug mode.
 debug = False
+
+# Create S-Store client object instance
+db = sstoreclient.sstoreclient()
 
 # ================
 # REST API function definitions
@@ -45,19 +49,22 @@ def check_login():
 # ---------
 # Verb:     GET
 # Route:    /REST/1.0/stations/all
-# Response: [ {<int:station_id>,<float:lat>,<float:lon>,<string:address>}, ... ]
+# Response: [{<int:STATION_ID>, <string:STATION_NAME>, <int:LATITUDE>,
+#             <int:LONGITUDE>, <string:STREET_ADDRESS>}, ...]
 @app.route('/REST/1.0/stations/all')
 def all_stations():
+    proc = 'TestProcedure'
     try:
-        db = open('/home/dramage/bikeshare-web/data/stations.json','r')
-    except:
-        syslog.syslog(syslog.LOG_ERR, "could not open stations.json")
+        data = db.call_proc(proc)
+        return json.dumps(data['data'])
+    except Exception as e:
+        log_procerr(proc,str(e))
+        return '{}', 500
 
-    data = json.load(db)
-    return json.dumps(data, ensure_ascii=True)
 # Verb:     GET
 # Route:    /REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>
-# Response: [ {<int:station_id>,<float:lat>,<float:lon>,<string:address>}, ... ]
+# Response: [{<int:STATION_ID>, <string:STATION_NAME>, <int:LATITUDE>,
+#             <int:LONGITUDE>, <string:STREET_ADDRESS>}, ...]
 @app.route('/REST/1.0/stations/all/<float:lat>/<float:lon>/<float:rad>')
 def all_stations_in_rad(lat, lon, rad):
     return all_stations()
@@ -118,50 +125,52 @@ def bike_info(bike_id):
 # ---------
 # Verb:      POST
 # Route:     /REST/1.0/bikes/checkout
-# Form data: <int:station_id>
-# Response:  {<int:bike_id>}
+# Form data: <int:station_id>,<int:user_id>
+# Response:  Success (200) / Failure (403)
 @app.route('/REST/1.0/bikes/checkout', methods=['POST'])
 def checkout_bike():
-    db = open('data/checkout.json','r')
-    data = json.load(db)
-    target_station = request.form['station_id']
-    if target_station == str(data['station_id']):
-        bikes = data['bikes']
-        return json.dumps(bikes[0], ensure_ascii=True)
-    return '{}', 403
+    proc = 'CheckoutBike'
+    target_user = int(request.form['user_id'])
+    target_station = int(request.form['station_id'])
+    args = [target_user, target_station]
+    try:
+        data = db.call_proc(proc, args)
+        if data['success']:
+            return json.dumps(data['data'])
+        else:
+            return json.dumps(data['data']), 403
+    except Exception as e:
+        log_procerr(proc, str(e)) 
+        return '{}', 500
 
 # Checkin bike
 # ---------
 # Verb:      POST
 # Route:     /REST/1.0/bikes/checkin
-# Form data: <int:bike_id>,<int:station_id>
-# Response:  {<float:price>,<float:discount>}
+# Form data: <int:station_id>,<int:user_id>
+# Response:  Success (200) / Failure (403)
 @app.route('/REST/1.0/bikes/checkin', methods=['POST'])
 def checkin_bike():
-    db = open('data/checkin.json','r')
-    data = json.load(db)
-    target_station = request.form['station_id']
-    target_bike = request.form['bike_id']
-    if target_station == str(data['station_id']):
-        if data['num_docks'] > 0:
-            price = float(data['price']) - (float(data['price']) * data['discount'])
-            retn = { 'price': price, 'discount': data['discount'] }
-            return json.dumps(retn, ensure_ascii=True)
-    return '{}', 403
+    proc = 'CheckinBike'
+    target_user = int(request.form['user_id'])
+    target_station = int(request.form['station_id'])
+    args = [target_user, target_station]
+    try:
+        data = db.call_proc(proc, args)
+        if data['success']:
+            return json.dumps(data['data'])
+        else:
+            return json.dumps(data['data']), 403
+    except Exception as e:
+        log_procerr(proc, str(e)) 
+        return '{}', 500
 
 # Get/send recent bike positional data
 # ---------
-# Helper function which calls either the get or send version of this function,
-# depending on which HTTP verb is used.
-@app.route('/REST/1.0/bikes/pos/<int:bike_id>', methods=['GET','POST'])
-def bike_pos(bike_id):
-    if request.method == 'GET':
-        return get_bike_position(bike_id)
-    else:
-        return send_bike_position(bike_id)
 # Verb:     GET
 # Route:    /REST/1.0/bikes/pos/<int:bike_id>
 # Response: [ {<float:lat>,<float:lon>,<int:time>}, ... ]
+@app.route('/REST/1.0/bikes/pos/<int:bike_id>')
 def get_bike_position(bike_id):
     s = 'data/bikepos_' + str(bike_id) + '.json'
     try:
@@ -171,18 +180,25 @@ def get_bike_position(bike_id):
     data = json.load(db)
     return json.dumps(data, ensure_ascii=True)
 # Verb:      POST
-# Route:     /REST/1.0/bikes/pos/<int:bike_id>
-# Form data: <float:lat>,<float:lon>
-# Response:  {}
-def send_bike_position(bike_id):
-    lat = request.form['lat']
-    lon = request.form['lon']
-    s = 'data/bikepos_' + str(bike_id) + '.json'
+# Route:     /REST/1.0/bikes/pos
+# Form data: <int:user_id>,<float:lat>,<float:lon>
+# Response:  Success (200) / Failure (403)
+@app.route('/REST/1.0/bikes/pos', methods=['POST'])
+def send_bike_position():
+    proc = 'RideBike'
+    user = int(request.form['user_id'])
+    lat = float(request.form['lat'])
+    lon = float(request.form['lon'])
+    args = [user, lat, lon]
     try:
-        db = open(s,'r')
-    except IOError:
-        return '{}', 404
-    return '{}'
+        data = db.call_proc(proc, args)
+        if data['success']:
+            return json.dumps(data['data'])
+        else:
+            return json.dumps(data['data']), 403
+    except Exception as e:
+        log_procerr(proc, str(e)) 
+        return '{}', 500
 
 # Helper function. Extracts and returns only the set of key/value pairs that
 # we want from a given dict.
@@ -192,6 +208,12 @@ def subdict(d, keys):
         if k in keys:
             d2[k] = v
     return d2
+
+def log_procerr(proc = '', msg = ''):
+    err = 'Exception encountered when calling S-Store procedure "'
+    err += proc + '": ' + msg
+    syslog.syslog(syslog.LOG_ERR, err)
+    return
 
 # ================
 # Main app function definitions
