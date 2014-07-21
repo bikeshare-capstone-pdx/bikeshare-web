@@ -17,3 +17,19 @@
     border-radius: 0 0 1em 1em;
     padding: 10px;
 }
+
+#mapdiv { width:100%; height:550px; }
+div.olControlAttribution { bottom:3px; }
+
+.popup {
+    position: absolute;
+    padding: 5px;
+    font-size: 8pt;
+    z-index: 1000;
+    background-color: white
+}
+
+#footer {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
