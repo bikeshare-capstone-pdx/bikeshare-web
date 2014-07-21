@@ -399,17 +399,17 @@ def home():
 # This is a GET route to display a single bike page of a given name
 @app.route('/bike/<int:bike_id>')
 def view_bike(bike_id):
-    return render_template('bikes.html',bike_id=bike_id)
+    return render_template('bike.html',bike_id=bike_id)
 
 # This is a GET route to display a single station page of a given name
-@app.route('/station/<int:statio_id>')
+@app.route('/station/<int:station_id>')
 def view_station(station_id):
-    return render_template('stations.html',station_id=station_id)
+    return render_template('station.html',station_id=station_id)
 
 # This is a GET route to display a single user page of a given name
 @app.route('/user/<int:user_id>')
 def view_user(user_id):
-    return render_template('users.html',user_id=user_id)
+    return render_template('user.html',user_id=user_id)
 
 @app.route('/javascript/<path:path>', methods=['GET','OPTIONS'])
 def js_proxy(path):
@@ -431,7 +431,7 @@ def internal_server_error(e):
 
 if __name__ == '__main__':
     if debug:
-        app.run(host='127.0.0.1', port=8081, debug=True)
+        app.run(host='127.0.0.1', port=8082, debug=True)
     else:
-        app.run(host='0.0.0.0', port=8081, debug=True)
+        app.run(host='0.0.0.0', port=8082, debug=True)
 

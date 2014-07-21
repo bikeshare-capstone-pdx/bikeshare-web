@@ -1,7 +1,67 @@
-{%extends "base.html" %}
+{% extends "base.html" %}
 
-{% block title %}BikeSharePDX{% endblock %}
+{% block title %}All Users{% endblock %}
 
 {% block page_content %}
-Users page.
+<div class="widget">
+    <div class="widget-header">
+        <div class="row">
+            <div class="col-sm-8">
+                <strong>All Users</strong>
+            </div>
+            <div class="col-sm-4">
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <select class="form-control input-sm">
+                        <option value="">
+                            User ID
+                        </option>
+                        <option value="">
+                            Username 
+                        </option>
+                        <option value="">
+                            Credit Card
+                        </option>
+                        <option value="">
+                            Membership Status
+                        </option>
+                        <option value="">
+                            Membership Expires (Increasing)
+                        </option>
+                        <option value="">
+                            Membership Expires (Decreasing)
+                        </option>
+                    </select>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    <div class="widget-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <td>User ID</td>
+                    <td>Username</td>
+                    <td>Membership Status</td>
+                    <td>Membership Expires</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Thor</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Bobby</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

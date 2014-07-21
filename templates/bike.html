@@ -1,0 +1,65 @@
+{%extends "base.html" %}
+
+{% block title %}Bike Details{% endblock %}
+
+{% block page_content %}
+<h2><p class="text-center">Bike ID: {{ bike_id }}</p></h2>
+<p class="text-center">Current Location:</p>
+<div class="row">
+    <div class="col-sm-9">
+        <div class="widget">
+            <div class="widget-header">
+                <strong>History</strong>
+            </div>
+            <div class="widget-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <td>Trip Id</td>
+                            <td>Date</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="widget">
+            <div class="widget-header">
+                <strong>Current Status</strong>
+            </div>
+            <div class="widget-body">
+                <table class="table">
+                    <tr><td>Date aquired</td><td></td></tr>
+                    <tr><td>Miles travelled</td><td></td></tr>
+                    <tr><td>Customers served:</td><td></td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="widget">
+            <div class="widget-header">
+                <strong>Trip View</strong>
+            </div>
+            <div class="widget-body">
+               Map goes here? 
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

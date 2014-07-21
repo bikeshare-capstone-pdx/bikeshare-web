@@ -54,20 +54,10 @@ type="image/x-icon">
 </script>
 {% endblock %}
 {% block content %}
-
-<style>
-    #mapdiv { width:950px; height:550px; }
-    div.olControlAttribution { bottom:3px; }
-
-    .popup {
-        position: absolute;
-        padding: 5px;
-        font-size: 8pt;
-        z-index: 1000;
-        background-color: white
-    }
-</style>
 <div class="container-fluid">
     {% block page_content %}{% endblock %}
+</div>
+<div id="footer">
+    <center>Capstone Team B, Portland State University, 2014</center>
 </div>
 {% endblock %}
