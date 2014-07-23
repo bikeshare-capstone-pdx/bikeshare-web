@@ -1,8 +1,9 @@
 import syslog
-from flask import Flask, request, render_template, send_from_directory
+from flask import Flask, request, render_template, send_from_directory, jsonify
 from flask.ext.bootstrap import Bootstrap
 import json
 import re
+import os
 
 from datetime import timedelta
 from flask import make_response, request, current_app
@@ -14,7 +15,15 @@ app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
 # Set debug mode.
-debug = False
+debug = True
+
+#load simulated routes
+routes = []
+riderId = 0
+for filename in os.listdir('/home/dramage/bikeshare-web/data/routes'):
+    routeFile = open('/home/dramage/bikeshare-web/data/routes/' + filename, 'r')
+    routes.append({ 'routeIndex' : 0, 'route' : json.load(routeFile)})
+    routeFile.close()
 
 # Create S-Store client object instance
 db = sstoreclient.sstoreclient()
@@ -374,6 +383,19 @@ def get_userstats():
     else:
         return len(data['data'])
 
+
+@app.route('/REST/1.0/riders/location', methods=['GET'])
+def send_rider_data():
+    riderData = []
+    riderId = 0
+    for route in routes:
+        riderData.append({'rider_id' : riderId, 'location' : routes[riderId]['route'][routes[riderId]['routeIndex']]})
+        routes[riderId]['routeIndex'] = (routes[riderId]['routeIndex'] + 1) % len(routes[riderId]['route'])
+        riderId += 1
+    print riderData
+    return jsonify({'rider_locations' : riderData})
+
+
 # Helper function. Extracts and returns only the set of key/value pairs that
 # we want from a given dict.
 def subdict(d, keys):
@@ -432,6 +454,7 @@ def view_user(user_id):
 def js_proxy(path):
     return send_from_directory(app.root_path + '/javascript/', path)
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     if re.match('/REST',request.path):
@@ -448,7 +471,7 @@ def internal_server_error(e):
 
 if __name__ == '__main__':
     if debug:
-        app.run(host='127.0.0.1', port=8081, debug=True)
+        app.run(host='127.0.0.1', port=8089, debug=True)
     else:
-        app.run(host='0.0.0.0', port=8081, debug=True)
+        app.run(host='0.0.0.0', port=8089, debug=True)
 
