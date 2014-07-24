@@ -11,7 +11,7 @@ import sstoreclient
 import requests
 
 app = Flask(__name__)
-
+app.config.setdefault('BOOTSTRAP_SERVE_LOCAL',True)
 bootstrap = Bootstrap(app)
 
 # Set debug mode.
@@ -311,7 +311,7 @@ def send_bike_position():
     # Failure cases
     except Exception as e:
         # Client failed to connect to or get data from S-Store.
-        log_procerr(proc, str(e)) 
+        log_procerr(proc, str(e))
         return '{}', 500
     if not data['success']:
         # DB procedure execution failed.
