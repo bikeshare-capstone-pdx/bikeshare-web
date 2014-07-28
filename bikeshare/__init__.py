@@ -13,7 +13,7 @@ app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
 # Set debug mode.
-debug = False
+debug = True
 
 apiurl = 'http://api.bikeshare.cs.pdx.edu'
 
