@@ -125,7 +125,7 @@ function getBikestationData() {
 function setStationColor(stationNum,stationData) {
     bikePercent = (stationData.num_bikes / stationData.num_docks) * 100;
     if (bikePercent >= 70) {
-        features[stationNum].attributes.pointColor = 'blue';
+        features[stationNum].attributes.pointColor = 'green';
     } else if (70 > bikePercent >= 40) {
         features[stationNum].attributes.pointColor = 'yellow';
     } else {
@@ -201,7 +201,7 @@ function createStationFeature(lon,lat,stationName,bikes,docks,index,stationId) {
    var bikePercent = (bikes/docks) * 100;
    var pointColor;
    if (bikePercent > 70) {
-        pointColor = 'blue';
+        pointColor = 'green';
    } else if (70 > bikePercent >= 40) {
         pointColor = 'yellow';
    } else {
@@ -257,7 +257,7 @@ function updateStationFeature(stationId,stationData) {
     var bikePercent = (stationData.CURRENT_BIKES/stationData.CURRENT_DOCKS) * 100;
     var pointColor;
     if (bikePercent > 70) {
-        pointColor = 'blue';
+        pointColor = 'green';
     } else if ( 70 > bikePercent >= 40) {
         pointColor = 'yellow';
     } else {
